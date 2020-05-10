@@ -20,6 +20,7 @@ public class DispatchController {
         this.dispatchService = dispatchService;
     }
 
+    //    Додати мапінг для входу в систему для диспетчера
     @GetMapping("/employee_login/dispatch_login")
     public String employee_login(Model model) {
         model.addAttribute("employee", "dispatch");
@@ -27,6 +28,7 @@ public class DispatchController {
         return "employee_login";
     }
 
+    //    Додати мапінг для входу в систему для диспетчера
     @PostMapping("employee_login/dispatch_login")
     public String emp_log(@RequestParam("id") long id,
                           @RequestParam("username") String username,

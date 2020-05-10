@@ -20,6 +20,7 @@ public class AdminController {
         this.adminService = adminService;
     }
 
+    //    Додати мапінг для входу в систему для адміністратора
     @GetMapping("/employee_login/admin_login")
     public String employee_login(Model model) {
         model.addAttribute("employee", "admin");
@@ -27,6 +28,7 @@ public class AdminController {
         return "employee_login";
     }
 
+    //    Додати мапінг для входу в систему для адміністратора
     @PostMapping("employee_login/admin_login")
     public String emp_log(@RequestParam("id") long id,
                           @RequestParam("username") String username,

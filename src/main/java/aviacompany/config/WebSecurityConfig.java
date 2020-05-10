@@ -16,20 +16,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserService userService;
 
+    //    Створити Bean для кодера паролю
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    //    Розподілити сторінки за доступом
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable().authorizeRequests().antMatchers("/register")
-                .not().fullyAuthenticated().antMatchers("/admin/**", "/flights").hasRole("ADMIN")
-                .antMatchers("/news").hasRole("USER").antMatchers("/", "/home", "/about", "/news")
+                .not().fullyAuthenticated()
+//                Для адміністратора
+                .antMatchers("/admin/**", "/flights").hasRole("ADMIN")
+//                Для користувача
+                .antMatchers("/news").hasRole("USER")
+//                Для усіх
+                .antMatchers("/", "/home", "/about")
                 .permitAll().anyRequest().authenticated().and().formLogin().loginPage("/login").defaultSuccessUrl("/home")
                 .permitAll().and().logout().permitAll().logoutSuccessUrl("/home");
     }
 
+    //    Зконфігурувати менеджера аутентифікації
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder());

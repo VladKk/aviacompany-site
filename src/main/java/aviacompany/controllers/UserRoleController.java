@@ -29,20 +29,24 @@ public class UserRoleController {
         this.userRepository = userRepository;
     }
 
+    //    Додати мапінг для сторінки логіну
     @GetMapping("/login")
     public String login(Model model) {
         model.addAttribute("label", "Login");
         return "login";
     }
 
+    //    Додати мапінг для сторіки реєстрації
     @GetMapping("/register")
     public String register(Model model) {
         model.addAttribute("label", "Register");
+//       До моделі додати нові об'єкти користувача та клієнта
         model.addAttribute("user", new User());
         model.addAttribute("client", new Client());
         return "register";
     }
 
+    //    Додати нового користувача до системи
     @PostMapping("register")
     public String addUser(@Valid User user,
                           BindingResult bindingResult,
@@ -50,19 +54,23 @@ public class UserRoleController {
                           BindingResult bindingResult1,
                           Model model) {
         model.addAttribute("label", "Register");
+//        Якщо в формах є помилки, то вивести їх
         if (bindingResult.hasErrors() || bindingResult1.hasErrors())
             return "register";
 
+//        Якщо паролі не співпадають, то вивести помилку
         if (!user.getPassword().equals(user.getConfirmPass())) {
             model.addAttribute("passwordError", "Passwords dont match");
             return "register";
         }
 
+//        Якщо неможливо додати користувача, то вивести помилку
         if (!userService.saveUser(user)) {
             model.addAttribute("loginError", "The user is already exists");
             return "register";
         }
 
+//        Створити та зберегти користувача
         User user1 = userRepository.findByLogin(user.getUsername());
 
         client.setUser(user1);

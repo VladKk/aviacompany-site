@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 
+// Клас сутності для додаткових послуг
 @Entity
 @Table(name = "add_service")
 public class AddService {

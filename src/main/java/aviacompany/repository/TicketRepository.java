@@ -1,6 +1,8 @@
 package aviacompany.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import aviacompany.entity.Ticket;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TicketRepository extends JpaRepository<Ticket, Long> {}
+// Репозиторій для квитка
+public interface TicketRepository extends JpaRepository<Ticket, Long> {
+}

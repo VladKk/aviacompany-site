@@ -18,14 +18,17 @@ public class AdminRoleController {
         this.userService = userService;
     }
 
+    //    Додати мапінг для сторінки для адміністратора
     @GetMapping("/admin")
     public String admin(Model model) {
         model.addAttribute("label", "Admin");
+//        До моделі додати список користувачів та дані про поточного користувача
         model.addAttribute("user_list", userService.allUsers());
         model.addAttribute("user", userService.getUser());
         return "admin";
     }
 
+    //    Видалити коритсувача
     @PostMapping("admin")
     public String deleteUser(@RequestParam(required = true, defaultValue = "") long id,
                              @RequestParam(required = true, defaultValue = "") String action,
@@ -37,6 +40,7 @@ public class AdminRoleController {
         return "redirect:/admin";
     }
 
+    //    Отримати дані про певного користувача
     @GetMapping("/admin/get/{id}")
     public String getUser(@PathVariable("id") long id,
                           Model model) {

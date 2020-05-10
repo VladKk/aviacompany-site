@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 
+// Клас сутності для диспетчера
 @Entity
 @Table(name = "dispatch")
 public class Dispatch {

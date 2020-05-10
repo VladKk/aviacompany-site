@@ -17,6 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 
+// Клас стуності для користувача
 @Entity
 @Table(name = "t_user")
 public class User implements UserDetails {

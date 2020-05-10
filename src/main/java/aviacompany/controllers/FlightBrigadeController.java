@@ -20,6 +20,7 @@ public class FlightBrigadeController {
         this.flightBrigadeService = flightBrigadeService;
     }
 
+    //    Додати мапінг для входу в систему для льотної бригади
     @GetMapping("/employee_login/flight_brigade_login")
     public String employee_login(Model model) {
         model.addAttribute("employee", "flight_brigade");
@@ -27,6 +28,7 @@ public class FlightBrigadeController {
         return "employee_login";
     }
 
+    //    Додати мапінг для входу в систему для льотної бригади
     @PostMapping("employee_login/flight_brigade_login")
     public String emp_log(@RequestParam("id") long id,
                           @RequestParam("username") String username,

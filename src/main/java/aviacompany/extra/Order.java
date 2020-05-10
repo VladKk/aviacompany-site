@@ -6,6 +6,7 @@ import aviacompany.entity.Ticket;
 import java.util.ArrayList;
 import java.util.List;
 
+// Додатковий клас для обробки замовлення
 public class Order {
     private final List<Ticket> tickets;
     private double total;
@@ -19,9 +20,11 @@ public class Order {
         return tickets;
     }
 
+    //    Додати новий квиток до замовлення
     public synchronized void addNewItemToOrder(Ticket ticket, boolean hasAddService) {
         boolean newItem = true;
 
+//        Якщо новий квиток уже існує, то не додавати його до замовлення
         for (Ticket item : tickets) {
             if (item.getId() == ticket.getId()) {
                 newItem = false;
@@ -32,6 +35,7 @@ public class Order {
         if (newItem) {
             tickets.add(ticket);
 
+//            Якщо квиток має обрані додаткові послуги, то додати його повну ціну, інакше додати лише ціну самого квитка
             if (hasAddService)
                 total += ticket.getFullPrice();
             else
@@ -39,6 +43,7 @@ public class Order {
         }
     }
 
+    //    Видалити квиток з замовлення
     public synchronized void deleteItemInOrder(Ticket ticket) {
         for (Ticket item : tickets) {
             if (item.getId() == ticket.getId()) {
@@ -49,6 +54,7 @@ public class Order {
         }
     }
 
+    //    Очитсити замовлення
     public synchronized void clearOrder() {
         tickets.clear();
         total = 0.0;

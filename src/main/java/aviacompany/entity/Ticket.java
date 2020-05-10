@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 
+// Клас сутності для квитка
 @Entity
 @Table(name = "ticket")
 public class Ticket {

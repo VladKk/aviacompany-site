@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+// Бізнес-логіка для користувача
 @Service
 public class UserService implements UserDetailsService {
     @PersistenceContext
@@ -26,6 +27,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    //    Отримати користувача за логіном
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByLogin(username);
@@ -36,11 +38,13 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    //    Отримати користувача за id
     public User findUserById(long id) {
         Optional<User> userFromDB = userRepository.findById(id);
         return userFromDB.orElse(new User());
     }
 
+    //    Отримати поточного користувача
     public String getUser() {
         String name = "";
 
@@ -50,10 +54,12 @@ public class UserService implements UserDetailsService {
         return name;
     }
 
+    //    Отримати список всіх користувачів
     public List<User> allUsers() {
         return userRepository.findAll();
     }
 
+    //    Зберегти користувача
     public boolean saveUser(User user) {
         User userFromDB = userRepository.findByLogin(user.getUsername());
 
@@ -67,6 +73,7 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
+    //    Видалити користувача
     public boolean deleteUser(long id) {
         if (userRepository.findById(id).isPresent()) {
             userRepository.deleteById(id);
@@ -76,6 +83,7 @@ public class UserService implements UserDetailsService {
         return false;
     }
 
+    //    Отримати певний список користувачів, починаючи з заданого id
     public List<User> getUserList(long fromId) {
         return entityManager.createQuery("select usr from User usr where usr.id > :paramId", User.class)
                 .setParameter("paramId", fromId).getResultList();

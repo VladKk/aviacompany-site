@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+// Бізнес-логіка для диспетчера
 @Service
 public class DispatchService {
     private final DispatchRepository dispatchRepository;
@@ -17,6 +18,7 @@ public class DispatchService {
         this.dispatchRepository = dispatchRepository;
     }
 
+    //    Отримати логін для диспетчера за іменем користувача та паролем
     public boolean getLogin(long id, String username, String password) {
         List<Dispatch> dispatches = dispatchRepository.findAllByIdAndUsernameAndPassword(id, username, password);
 

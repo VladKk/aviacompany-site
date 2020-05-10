@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 
+// Клас сутності для польоту
 @Entity
 @Table(name = "flight")
 public class Flight {

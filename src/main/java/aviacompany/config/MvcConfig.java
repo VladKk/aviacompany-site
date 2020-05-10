@@ -7,17 +7,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
+    //    Додати шлях до зображень в комфігурацію
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
 
+    //    Додати сторінки, які доступні усім користувачам
     @Override
     public void addViewControllers(ViewControllerRegistry viewControllerRegistry) {
         viewControllerRegistry.addViewController("/").setViewName("home");
         viewControllerRegistry.addViewController("/home").setViewName("home");
         viewControllerRegistry.addViewController("/about").setViewName("about");
         viewControllerRegistry.addViewController("/login").setViewName("login");
-        viewControllerRegistry.addViewController("/news").setViewName("news");
     }
 }

@@ -14,6 +14,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 
+// Клас сутності для клієнта
 @Entity
 @Table(name = "client")
 public class Client {

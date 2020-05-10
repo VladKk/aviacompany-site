@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+// Бізнес-логіка для адміністратора
 @Service
 public class AdminService {
     private final AdminRepository adminRepository;
@@ -16,6 +17,7 @@ public class AdminService {
         this.adminRepository = adminRepository;
     }
 
+    //    Отримати логін для адміністратора за іменем користувача та паролем
     public boolean getLogin(long id, String username, String password) {
         List<Admin> admins = adminRepository.findAllByIdAndUsernameAndPassword(id, username, password);
 

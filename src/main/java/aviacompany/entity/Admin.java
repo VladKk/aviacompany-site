@@ -1,9 +1,11 @@
 package aviacompany.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
-
 import java.util.List;
 
 @AllArgsConstructor
@@ -11,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 
+// Клас сутності для адміміністратора
 @Entity
 @Table(name = "admin")
 public class Admin {

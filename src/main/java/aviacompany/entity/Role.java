@@ -14,6 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 
+// Клас сутності для ролі користувача
 @Entity
 @Table(name = "t_role")
 public class Role implements GrantedAuthority {
