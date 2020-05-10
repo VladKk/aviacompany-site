@@ -27,7 +27,7 @@ If you have suggestions, write:
 
 ## Versioning
 
-For the versions available, see the [aviacompany-site](https://github.com/VladKk/SimpleTranslator). 
+For the versions available, see the [aviacompany-site](https://github.com/VladKk/aviacompany-site). 
 
 ## Authors
 
