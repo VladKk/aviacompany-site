@@ -1,0 +1,23 @@
+package aviacompany.extra;
+
+import aviacompany.entity.FlightBrigade;
+import aviacompany.repository.FlightBrigadeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class FlightBrigadeService {
+    private final FlightBrigadeRepository flightBrigadeRepository;
+
+    @Autowired
+    public FlightBrigadeService(FlightBrigadeRepository flightBrigadeRepository) {
+        this.flightBrigadeRepository = flightBrigadeRepository;
+    }
+
+    public boolean getLogin(long id, String username, String password) {
+        List<FlightBrigade> flightBrigades = flightBrigadeRepository.findAllByIdAndUsernameAndPassword(id, username, password);
+        return !flightBrigades.isEmpty();
+    }
+}
