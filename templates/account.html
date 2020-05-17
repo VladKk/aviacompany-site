@@ -1,0 +1,25 @@
+{% extends "parts/layout.html" %}
+{% block content %}
+    <br><br>
+    <div class="container well span6 align-self-center">
+        <div class="row-fluid">
+            <div class="span2">
+                <img src="../static/user_icon.png" class="img-circle" alt="user_icon">
+            </div>
+
+            {% if client %}
+                <div class="span8">
+                    <h3>{{ client.first_name }} {{ client.last_name }}</h3>
+                    <h6>Email: {{ client.email }}</h6>
+                    <h6>Age: {{ client.age }}</h6>
+                    <h6>Role: {{ current_user.role[0].name }}</h6>
+                </div>
+            {% else %}
+                <div class="span8">
+                    <h3>Login: {{ current_user.login }}</h3>
+                    <h6>Role: {{ current_user.role[0].name }}</h6>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

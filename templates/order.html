@@ -1,0 +1,44 @@
+{% extends "parts/layout.html" %}
+{% block content %}
+    <div class="container align-self-center">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Product</th>
+                <th scope="col" class="text-right">Price</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for ticket, price in order %}
+                <tr>
+                    <td><img src="../static/ticket{{ ticket.id }}.jpeg" alt="{{ ticket.id }}"></td>
+                    <td>Flight To: {{ ticket.destination }}</td>
+                    <td class="text-right">{{ price }}$</td>
+                    <td class="text-right">
+                        <form method="post" action="{{ url_for('order') }}">
+                            <label for="id" hidden></label>
+                            <input type="number" name="id" id="id" value="{{ ticket.id }}" hidden>
+                            <input name="submit_button" type="submit" class="btn btn-sm btn-danger" value="Remove">
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><strong>Total</strong></td>
+                <td class="text-right"><strong>{{ over_total }}$</strong></td>
+            </tr>
+            </tbody>
+        </table>
+        <a href="{{ url_for('thanks') }}">
+            <button class="btn btn-primary float-right">Buy</button>
+        </a>
+        <form method="post" action="{{ url_for('order') }}">
+            <input name="submit_button" type="submit" class="btn btn-danger" value="Clear All">
+        </form>
+    </div>
+{% endblock %}

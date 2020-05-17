@@ -1,0 +1,28 @@
+{% import "parts/bootstrap.html" as bootstrap %}
+{% import "parts/navbar.html" as navbar with context %}
+{% import "parts/footer.html" as footer %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{{ label }} | Aviacompany</title>
+    {{ bootstrap }}
+</head>
+<body style="background-color: #dedede;">
+{{ navbar }}
+<h1 class="text-center">{{ label }} Page</h1>
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+{% block content %}{% endblock %}
+{{ footer }}
+</body>
+</html>

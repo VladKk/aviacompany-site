@@ -1,0 +1,44 @@
+{% extends "parts/layout.html" %}
+{% block content %}
+    <div class="container align-self-center">
+        <form method="post" action="{{ url_for('messenger') }}">
+            <div class="form-group">
+                <label for="msgFrom">Message From: {{ current_user.login }}</label>
+                <input type="text" class="form-control" id="msgFrom" hidden>
+            </div>
+            <div class="form-group">
+                <label for="msgTo">Message To: </label>
+                <input maxlength="32" name="msgTo" type="text" class="form-control" id="msgTo">
+            </div>
+            <div class="form-group">
+                <label for="msgText">Message Text</label>
+                <input name="msgText" maxlength="255" class="form-control" id="msgText">
+            </div>
+            <input name="submit_button" type="submit" class="btn btn-primary float-right" value="Show Messages For Me">
+            <input name="submit_button" type="submit" class="btn btn-primary" value="Send">
+        </form>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col">Message Text</th>
+                <th scope="col">Date Sent</th>
+            </tr>
+            </thead>
+            {% for msg in messages %}
+                <tbody>
+                <tr>
+                    <th scope="row">{{ msg.id }}</th>
+                    <td>{{ msg.msg_from }}</td>
+                    <td>{{ msg.msg_to }}</td>
+                    <td>{{ msg.msg_text }}</td>
+                    <td>{{ msg.date_sent }}</td>
+                </tr>
+                </tbody>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

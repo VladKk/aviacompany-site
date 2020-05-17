@@ -1,0 +1,10 @@
+{% extends "parts/layout.html" %}
+{% block content %}
+    <div class="container align-self-center">
+        <h4>Thanks For Order!</h4>
+        <br>
+        <a href="{{ url_for('home') }}">
+            <button class="btn btn-primary">To Main Menu</button>
+        </a>
+    </div>
+{% endblock %}
