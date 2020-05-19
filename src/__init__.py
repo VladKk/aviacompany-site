@@ -19,6 +19,7 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
 
+import src.routes
 import src.models
 from src.extra import AdminIndex, ModelV
 
