@@ -34,9 +34,9 @@
             </tr>
             </tbody>
         </table>
-        <a href="{{ url_for('thanks') }}">
-            <button class="btn btn-primary float-right">Buy</button>
-        </a>
+        <form method="post" action="{{ url_for('order') }}">
+            <input name="submit_button" type="submit" class="btn btn-primary float-right" value="Buy">
+        </form>
         <form method="post" action="{{ url_for('order') }}">
             <input name="submit_button" type="submit" class="btn btn-danger" value="Clear All">
         </form>

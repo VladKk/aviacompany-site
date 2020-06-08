@@ -1,11 +1,14 @@
 import json
 
+import flask_mail
+import sqlalchemy
 from flask import flash, render_template, redirect, url_for, request, session
 from flask_login import login_user, current_user, logout_user, login_required
+from sqlalchemy.sql.expression import cast
 
-from src import app, bcrypt, db
+from src import app, bcrypt, db, mail
 from src.extra import admin_required
-from src.forms import RegisterForm, LoginForm
+from src.forms import RegisterForm, LoginForm, RequestResetForm, ResetPasswordForm
 from src.models import Flight, Ticket, User, Client, Role, Message, Administrator, FlightBrigade, Dispatch
 
 
@@ -64,6 +67,48 @@ def login():
     return render_template('login.html', label='Login', form=form)
 
 
+def send_reset_email(user):
+    token = user.get_reset_token()
+    msg = flask_mail.Message('Password Reset Request', sender='noreply@aviacompany.com', recipients=[user.login])
+    msg.body = f'''To reset your password, visit the following link:
+    {url_for('reset_token', token=token, _external=True)}
+    
+    If you did not make this request then simply ignore this email and no changes will be made.
+    '''
+    mail.send(msg)
+
+
+@app.route('/reset_password', methods=['GET', 'POST'])
+def reset_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    form = RequestResetForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(login=form.email.data).first()
+        send_reset_email(user)
+        flash('An email has been sent with instructions to reset your password.', 'info')
+        return redirect(url_for('login'))
+    return render_template('request_reset.html', label='Reset Request', form=form)
+
+
+@app.route('/reset_password/<string:token>', methods=['GET', 'POST'])
+def reset_token(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    user = User.verify_reset_token(token)
+    if user is None:
+        flash('That is an invalid or expired token.', 'warning')
+        return redirect(url_for('reset_request'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user.password = hashed_password
+        db.session.commit()
+        flash(f'Your password has been changed!', 'success')
+        return redirect(url_for('login'))
+    return render_template('reset_token.html', label='Reset Password', form=form)
+
+
 @app.route('/logout')
 def logout():
     logout_user()
@@ -82,7 +127,14 @@ def account():
 @app.route('/flights')
 @login_required
 def flights():
-    return render_template('flight.html', label='Flights', flights=Flight.query.order_by(Flight.id).all())
+    q = request.args.get('q')
+    page = request.args.get('page', 1, type=int)
+    if q:
+        fl = Flight.query.filter(Flight.departure.contains(q) | Flight.destination.contains(q)
+                                 | Flight.flight_time.contains(q)).paginate(page=page, per_page=2)
+    else:
+        fl = Flight.query.order_by(Flight.id).paginate(page=page, per_page=2)
+    return render_template('flight.html', label='Flights', flights=fl)
 
 
 @app.route('/news')
@@ -105,7 +157,14 @@ def track_flight():
 @app.route('/tickets')
 @login_required
 def tickets():
-    return render_template('tickets.html', label='Tickets', tickets=Ticket.query.order_by(Ticket.id).all())
+    q = request.args.get('q')
+    page = request.args.get('page', 1, type=int)
+    if q:
+        ti = Ticket.query.filter(Ticket.destination.contains(q) | cast(Ticket.price, sqlalchemy.String).contains(q)) \
+            .paginate(page=page, per_page=2)
+    else:
+        ti = Ticket.query.order_by(Ticket.id).paginate(page=page, per_page=2)
+    return render_template('tickets.html', label='Tickets', tickets=ti)
 
 
 @app.route('/tickets/<int:id>', methods=['GET', 'POST'])
@@ -172,6 +231,17 @@ def order():
             total.clear()
             session['tickets'] = json.dumps(tickets_id)
             session['total'] = json.dumps(total)
+        elif request.form['submit_button'] == 'Buy':
+            client = Client.query.filter_by(id=current_user.id).first()
+            client.tickets = tickets_id
+            for item in tickets_id:
+                item.client_id = current_user.id
+            db.session.commit()
+            tickets_id.clear()
+            total.clear()
+            session['tickets'] = json.dumps(tickets_id)
+            session['total'] = json.dumps(total)
+            return redirect(url_for('thanks'))
         return redirect(url_for('order'))
 
     return render_template('order.html', label='Order', order=zip(tickets_id, total), over_total=round(over_total, 2))
@@ -181,7 +251,16 @@ def order():
 @login_required
 @admin_required
 def messenger():
-    message = Message.query.all()
+    q = request.args.get('q')
+    page = request.args.get('page', 1, type=int)
+    if q:
+        message = Message.query.filter(Message.msg_to.contains(q) | Message.msg_from.contains(q)
+                                       | Message.msg_text.contains(q)
+                                       | cast(Message.date_sent, sqlalchemy.String).contains(q)
+                                       | cast(Message.id, sqlalchemy.String).contains(q)) \
+            .paginate(page=page, per_page=5)
+    else:
+        message = Message.query.paginate(page=page, per_page=5)
     if request.method == 'POST':
         if request.form['submit_button'] == 'Send':
             admin = Administrator.query.filter_by(username=request.form['msgTo']).first()
@@ -199,9 +278,9 @@ def messenger():
                 message.msg_text = request.form['msgText']
                 db.session.add(message)
                 db.session.commit()
-            message = Message.query.all()
+            message = Message.query.paginate(page=page, per_page=5)
         elif request.form['submit_button'] == 'Show Messages For Me':
-            message = Message.query.filter_by(msg_to=current_user.login).all()
+            message = Message.query.filter_by(msg_to=current_user.login).paginate(page=page, per_page=5)
 
     return render_template('messenger.html', label='Messenger', messages=message)
 

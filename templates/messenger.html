@@ -14,8 +14,8 @@
                 <label for="msgText">Message Text</label>
                 <input name="msgText" maxlength="255" class="form-control" id="msgText">
             </div>
+            <input name="submit_button" type="submit" class="btn btn-primary float-left" value="Send">
             <input name="submit_button" type="submit" class="btn btn-primary float-right" value="Show Messages For Me">
-            <input name="submit_button" type="submit" class="btn btn-primary" value="Send">
         </form>
 
         <table class="table">
@@ -28,7 +28,7 @@
                 <th scope="col">Date Sent</th>
             </tr>
             </thead>
-            {% for msg in messages %}
+            {% for msg in messages.items %}
                 <tbody>
                 <tr>
                     <th scope="row">{{ msg.id }}</th>
@@ -40,5 +40,19 @@
                 </tbody>
             {% endfor %}
         </table>
+        <br>
+        {% for pg_num in messages.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if pg_num %}
+                {% if messages.page == pg_num %}
+                    <a class="btn btn-info mb-4"
+                       href="{{ url_for('messenger', page=pg_num) }}">{{ pg_num }}</a>
+                {% else %}
+                    <a class="btn btn-outline-info mb-4"
+                       href="{{ url_for('messenger', page=pg_num) }}">{{ pg_num }}</a>
+                {% endif %}
+            {% else %}
+                ...
+            {% endif %}
+        {% endfor %}
     </div>
 {% endblock %}

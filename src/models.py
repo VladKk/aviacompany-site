@@ -2,8 +2,9 @@ import datetime
 
 from flask_login import UserMixin
 from flask_security import RoleMixin
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
-from src import db, login_manager
+from src import db, login_manager, app
 
 assoc_table_admin_flight_crew = db.Table('assoc_admin_flight_crew', db.Model.metadata,
                                          db.Column('admin_id', db.BigInteger, db.ForeignKey('admins.id')),
@@ -60,7 +61,7 @@ class Client(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     age = db.Column(db.Integer, nullable=False)
     password = db.Column(db.String(255), unique=True, nullable=False)
-    ticket = db.relationship('Ticket', uselist=False, back_populates='client')
+    tickets = db.relationship('Ticket')
     admin_id = db.Column(db.BigInteger, db.ForeignKey('admins.id'))
 
     def __repr__(self):
@@ -111,7 +112,6 @@ class Ticket(db.Model):
     price = db.Column(db.Float(2), nullable=False)
     add_services = db.relationship('AddService')
     client_id = db.Column(db.BigInteger, db.ForeignKey('clients.id'))
-    client = db.relationship('Client', back_populates='ticket')
 
     def __repr__(self):
         return f'<Ticket {self.id}>'
@@ -141,6 +141,19 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(255), unique=True, nullable=False)
 
     role = db.relationship('Role', secondary=assoc_table_role_user)
+
+    def get_reset_token(self, expire_time=1800):
+        s = Serializer(app.config['SECRET_KEY'], expire_time)
+        return s.dumps({'user_id': self.id}).decode('utf-8')
+
+    @staticmethod
+    def verify_reset_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id = s.loads(token)['user_id']
+        except:
+            return None
+        return User.query.get(user_id)
 
     def __repr__(self):
         return f'<User {self.id}>'

@@ -6,23 +6,35 @@
                 <!-- List group-->
                 <ul class="list-group shadow">
                     <!-- list group item-->
-                    {% for flight in flights %}
-                    <li class="list-group-item">
-                        <!-- Custom content-->
-                        <div class="media align-items-lg-center flex-column flex-lg-row p-3">
-                            <div class="media-body order-2 order-lg-1">
-                                <h5 class="mt-0 font-weight-bold mb-2">From: {{ flight.departure }}</h5>
-                                <h5 class="mt-0 font-weight-bold mb-2">To: {{ flight.destination }}</h5>
-                                <div class="d-flex align-items-center justify-content-between mt-1">
-                                    <h6 class="font-weight-bold my-2">Flight Time: {{ flight.flight_time }}</h6>
+                    {% for flight in flights.items %}
+                        <li class="list-group-item">
+                            <!-- Custom content-->
+                            <div class="media align-items-lg-center flex-column flex-lg-row p-3">
+                                <div class="media-body order-2 order-lg-1">
+                                    <h5 class="mt-0 font-weight-bold mb-2">From: {{ flight.departure }}</h5>
+                                    <h5 class="mt-0 font-weight-bold mb-2">To: {{ flight.destination }}</h5>
+                                    <div class="d-flex align-items-center justify-content-between mt-1">
+                                        <h6 class="font-weight-bold my-2">Flight Time: {{ flight.flight_time }}</h6>
+                                    </div>
                                 </div>
-                            </div>
-                            <img src="../static/flight_thumbnail.jpeg" alt="Flight image" style="width: 200px;"
-                                 class="ml-lg-5 order-1 order-lg-2">
-                        </div> <!-- End -->
-                    </li> <!-- End -->
+                                <img src="../static/flight_thumbnail.jpeg" alt="Flight image" style="width: 200px;"
+                                     class="ml-lg-5 order-1 order-lg-2">
+                            </div> <!-- End -->
+                        </li> <!-- End -->
                     {% endfor %}
                 </ul> <!-- End -->
+                <br>
+                {% for pg_num in flights.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if pg_num %}
+                        {% if flights.page == pg_num %}
+                            <a class="btn btn-info mb-4"
+                               href="{{ url_for('flights', page=pg_num) }}">{{ pg_num }}</a>
+                        {% else %}
+                            <a class="btn btn-outline-info mb-4"
+                               href="{{ url_for('flights', page=pg_num) }}">{{ pg_num }}</a>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
             </div>
         </div>
     </div>
